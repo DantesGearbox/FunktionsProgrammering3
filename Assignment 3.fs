@@ -20,6 +20,7 @@ let badTree = Branch(">2", 1.5, Branch(">3", 3.3, Leaf "A", Leaf "B"), Branch(">
 let wbtest1 = probOK okTree = true;;
 let wbtest2 = probOK badTree = false;;
 
+
 // Problem 4.2
 let rec isSample (os, t) = 
     match (os, t) with
@@ -28,4 +29,12 @@ let rec isSample (os, t) =
     | ([], Branch _) -> false
     | (o::os', Branch(_, _, tl, tr)) -> if o = S then isSample (os', tr) else  isSample (os', tl);;
 
+//Whitebox tests 4.2
+let correctSample = [S; F]
+let badSample1 = [S; F; F]
+let badSample2 = [S]
 
+
+let wbtest3 = isSample (correctSample, okTree) = true;;
+let wbtest4 = isSample (badSample1, okTree) = false;;
+let wbtest5 = isSample (badSample2, okTree) = false;;
