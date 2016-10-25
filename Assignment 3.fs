@@ -20,6 +20,10 @@ let badTree = Branch(">2", 1.5, Branch(">3", 3.3, Leaf "A", Leaf "B"), Branch(">
 let wbtest1 = probOK okTree = true;;
 let wbtest2 = probOK badTree = false;;
 
+
+//The type of isSample is:
+//  isSample: (Sample, probTree) -> bool
+
 // Problem 4.2
 let rec isSample (os, t) = 
     match (os, t) with
