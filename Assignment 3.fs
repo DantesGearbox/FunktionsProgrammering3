@@ -21,6 +21,9 @@ let wbtest1 = probOK okTree = true;;
 let wbtest2 = probOK badTree = false;;
 
 
+//The type of isSample is:
+//  isSample: (Sample, probTree) -> bool
+
 // Problem 4.2
 let rec isSample (os, t) = 
     match (os, t) with
