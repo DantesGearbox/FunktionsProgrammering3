@@ -11,3 +11,4 @@ type ProbTree = | Branch of string * float * ProbTree * ProbTree
 let exp = Branch(">2", 0.67, Branch(">3", 0.5, Leaf "A", Leaf "B")
                            , Branch(">3", 0.5, Leaf "C", Leaf "D" ))
 
+
