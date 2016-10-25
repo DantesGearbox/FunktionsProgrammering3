@@ -22,7 +22,7 @@ let wbtest2 = probOK badTree = false;;
 
 
 //The type of isSample is:
-//  isSample: (Sample, probTree) -> bool
+//  isSample: Sample * ProbTree -> bool
 
 // Problem 4.2
 let rec isSample (os, t) = 
@@ -36,7 +36,6 @@ let rec isSample (os, t) =
 let correctSample = [S; F]
 let badSample1 = [S; F; F]
 let badSample2 = [S]
-
 
 let wbtest3 = isSample (correctSample, okTree) = true;;
 let wbtest4 = isSample (badSample1, okTree) = false;;
