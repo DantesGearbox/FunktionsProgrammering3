@@ -30,7 +30,7 @@ let rec isSample (os, t) =
     | ([], Leaf _) -> true
     | (_, Leaf _) -> false
     | ([], Branch _) -> false
-    | (o::os', Branch(_, _, tl, tr)) -> if o = S then isSample (os', tr) else  isSample (os', tl);;
+    | (o::os', Branch(_, _, tl, tr)) -> if o = S then isSample (os', tl) else  isSample (os', tr);;
 
 //Whitebox tests 4.2
 let correctSample = [S; F]
@@ -48,18 +48,18 @@ let rec findList os t =
     match (os, t) with
     | ([], _) -> []
     | (_, Leaf l) -> []
-    | (o::os',Branch(str, _, tl, tr)) -> if o = S then (o, str)::findList os' tr else (o, str)::findList os' tr;;
+    | (o::os',Branch(str, _, tl, tr)) -> if o = S then (o, str)::findList os' tl else (o, str)::findList os' tr;;
 
 let rec findProb os t = 
     match (os, t) with
     | ([], _) -> 1.0
     | (_, Leaf l) -> 1.0
-    | (o::os',Branch(_, p, tl, tr)) -> if o = S then p * findProb os' tr else (1.0-p) * findProb os' tl;;
+    | (o::os',Branch(_, p, tl, tr)) -> if o = S then p * findProb os' tl else (1.0-p) * findProb os' tr;;
  
 let rec findLeaf os t =
     match (os, t) with
     | (_, Leaf l) -> l
-    | (o::os',Branch(_, _, tl, tr)) ->if o = S then findLeaf os' tr else findLeaf os' tl
+    | (o::os',Branch(_, _, tl, tr)) ->if o = S then findLeaf os' tl else findLeaf os' tr
     | ([], _) -> "";;
 
 let rec descriptionOf os t = 
