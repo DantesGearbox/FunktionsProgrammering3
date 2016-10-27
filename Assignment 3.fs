@@ -105,7 +105,7 @@ let newPred str = "B" = str || "C" = str;;
 let BCProb = probabilityOf exp newPred = 0.5;;
 
 //Note: Somehow the above test works fine even though the exact
-//same function is used as in wbtest8. 
+//same function is used as in wbtest8, which doesnt work.
 
 
 
