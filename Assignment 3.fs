@@ -7,6 +7,10 @@ type Sample = Outcome list
 type ProbTree = | Branch of string * float * ProbTree * ProbTree
                 | Leaf of string
 
+let exp = Branch(">2", 0.67, Branch(">3", 0.5, Leaf "A", Leaf "B")
+                           , Branch(">3", 0.5, Leaf "C", Leaf "D"));;
+
+
 //Problem 4.1
 let rec probOK pt = 
     match pt with
@@ -44,31 +48,51 @@ let wbtest5 = isSample (badSample2, okTree) = false;;
 //Problem 4.3
 type Description = (Outcome * string) list * float * string
 
-let rec findList os t = 
+let rec descriptionOf' os t (tup, p, l) =
     match (os, t) with
-    | ([], _) -> []
-    | (_, Leaf l) -> []
-    | (o::os',Branch(str, _, tl, tr)) -> if o = S then (o, str)::findList os' tl else (o, str)::findList os' tr;;
-
-let rec findProb os t = 
-    match (os, t) with
-    | ([], _) -> 1.0
-    | (_, Leaf l) -> 1.0
-    | (o::os',Branch(_, p, tl, tr)) -> if o = S then p * findProb os' tl else (1.0-p) * findProb os' tr;;
- 
-let rec findLeaf os t =
-    match (os, t) with
-    | (_, Leaf l) -> l
-    | (o::os',Branch(_, _, tl, tr)) ->if o = S then findLeaf os' tl else findLeaf os' tr
-    | ([], _) -> "";;
+    | (_,Leaf l') -> (tup, p, l')
+    | (o::os',Branch (str, p', tl, tr)) -> if o = S then descriptionOf' os' tl (tup@[(o,str)], p'*p, l)
+                                           else descriptionOf' os' tr (tup@[(o,str)], (1.0-p')*p, l)
+    |([], _) -> failwith("Sample is not correct");;
 
 let descriptionOf os t = 
     if isSample (os, t) = false then failwith "Sample is not correct"
     if probOK t = false then failwith "ProbTree is not correct"
-    else (findList os t, findProb os t, findLeaf os t);; 
-    //It would appear that there's a solution that runs through the tree
-    //only once, but we weren't able to make the outcome work in a tuple 
-    //which satisfies the example shown in the task description.
+    else descriptionOf' os t ([], 1.0, "");;
 
 //Whitebox test 4.3
 let wbtest6 = descriptionOf correctSample okTree = ([(S, ">2"); (F, ">3")], 0.335, "B");;
+
+//Problem 4.4
+let rec allDescriptions' t sf =
+    match t with
+    | Leaf l -> Set.empty.Add(sf)
+    | Branch(str, p, tl, tr) -> Set.union (allDescriptions' tl (sf@["S"])) (allDescriptions' tr (sf@["F"]));;
+
+
+//let allDescriptions t = Set.union (Set.empty.Add(Set.fold ( fun oc -> descriptionOf oc t) (allDescriptions' t []))) Set.empty;;
+
+let rec allDescriptions'' t sf ot =
+    match t with
+    | Leaf l -> Set.empty.Add(descriptionOf sf ot)
+    | Branch(str, p, tl, tr) -> Set.union (allDescriptions'' tl (sf@[S]) ot) (allDescriptions'' tr (sf@[F]) ot);;
+
+let allDescriptions t = allDescriptions'' t [] t;;
+
+let test = allDescriptions okTree;;
+
+let testset = Set.ofList [([(S, ">2"); (S, ">3")], 0.335, "A");
+                            ([(S, ">2"); (F, ">3")], 0.335, "B");
+                            ([(F, ">2"); (S, ">3")], 0.165, "C");
+                            ([(F, ">2"); (F, ">3")], 0.165, "D")];;
+                        
+                         
+let wbtest7 = test = Set.ofList [([(S, ">2"); (S, ">3")], 0.335, "A");
+                                    ([(S, ">2"); (F, ">3")], 0.335, "B");
+                                    ([(F, ">2"); (S, ">3")], 0.165, "C");
+                                    ([(F, ">2"); (F, ">3")], 0.165, "D")];;
+
+
+
+
+
