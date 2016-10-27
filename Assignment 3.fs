@@ -65,5 +65,10 @@ let rec findLeaf os t =
 let rec descriptionOf os t = 
     if isSample (os, t) = false then failwith "Sample is not correct"
     if probOK t = false then failwith "ProbTree is not correct"
-    else (findList os t, findProb os t, findLeaf os t);;
+    else (findList os t, findProb os t, findLeaf os t);; 
+    //It would appear that there's a solution that runs through the tree
+    //only once, but we weren't able to make the outcome work in a tuple 
+    //which satisfies the example shown in the task description.
 
+//Whitebox test 4.3
+let wbtest6 = descriptionOf correctSample okTree = ([(S, ">2"); (F, ">3")], 0.335, "B");;
