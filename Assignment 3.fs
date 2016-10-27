@@ -64,5 +64,6 @@ let rec findLeaf os t =
 
 let rec descriptionOf os t = 
     if isSample (os, t) = false then failwith "Sample is not correct"
+    if probOK t = false then failwith "ProbTree is not correct"
     else (findList os t, findProb os t, findLeaf os t);;
 
