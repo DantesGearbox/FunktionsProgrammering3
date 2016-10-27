@@ -62,7 +62,7 @@ let rec findLeaf os t =
     | (o::os',Branch(_, _, tl, tr)) ->if o = S then findLeaf os' tl else findLeaf os' tr
     | ([], _) -> "";;
 
-let rec descriptionOf os t = 
+let descriptionOf os t = 
     if isSample (os, t) = false then failwith "Sample is not correct"
     if probOK t = false then failwith "ProbTree is not correct"
     else (findList os t, findProb os t, findLeaf os t);; 
