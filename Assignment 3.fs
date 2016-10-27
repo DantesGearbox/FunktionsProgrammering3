@@ -44,13 +44,11 @@ let wbtest5 = isSample (badSample2, okTree) = false;;
 //Problem 4.3
 type Description = (Outcome * string) list * float * string
 
-let rec descriptionOf os t = 
-    if isSample (os, t) = false then failwith "Sample is not correct"
-
-let rec findList (o::os') t = 
-    match t with
-    | Leaf l -> []
-    | Branch(str, _, tl, tr) -> if o = S then (o, str)::findList os' tr else (o, str)::findList os' tr;;
+let rec findList os t = 
+    match (os, t) with
+    | ([], _) -> []
+    | (_, Leaf l) -> []
+    | (o::os',Branch(str, _, tl, tr)) -> if o = S then (o, str)::findList os' tr else (o, str)::findList os' tr;;
 
 let rec findProb os t = 
     match (os, t) with
@@ -61,7 +59,10 @@ let rec findProb os t =
 let rec findLeaf os t =
     match (os, t) with
     | (_, Leaf l) -> l
-    | (o::os',Branch(_, p, tl, tr)) ->if o = S then findLeaf os' tr else findLeaf os' tl
+    | (o::os',Branch(_, _, tl, tr)) ->if o = S then findLeaf os' tr else findLeaf os' tl
     | ([], _) -> "";;
 
+let rec descriptionOf os t = 
+    if isSample (os, t) = false then failwith "Sample is not correct"
+    else (findList os t, findProb os t, findLeaf os t);;
 
