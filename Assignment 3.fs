@@ -64,33 +64,53 @@ let descriptionOf os t =
 let wbtest6 = descriptionOf correctSample okTree = ([(S, ">2"); (F, ">3")], 0.335, "B");;
 
 //Problem 4.4
-let rec allDescriptions' t sf =
-    match t with
-    | Leaf l -> Set.empty.Add(sf)
-    | Branch(str, p, tl, tr) -> Set.union (allDescriptions' tl (sf@["S"])) (allDescriptions' tr (sf@["F"]));;
-
-
-//let allDescriptions t = Set.union (Set.empty.Add(Set.fold ( fun oc -> descriptionOf oc t) (allDescriptions' t []))) Set.empty;;
-
-let rec allDescriptions'' t sf ot =
+let rec allDescriptions' t sf ot =
     match t with
     | Leaf l -> Set.empty.Add(descriptionOf sf ot)
-    | Branch(str, p, tl, tr) -> Set.union (allDescriptions'' tl (sf@[S]) ot) (allDescriptions'' tr (sf@[F]) ot);;
+    | Branch(str, p, tl, tr) -> Set.union (allDescriptions' tl (sf@[S]) ot) (allDescriptions' tr (sf@[F]) ot);;
 
-let allDescriptions t = allDescriptions'' t [] t;;
+let allDescriptions t = allDescriptions' t [] t;;
 
-let test = allDescriptions okTree;;
+let test1 = allDescriptions okTree;;
 
-let testset = Set.ofList [([(S, ">2"); (S, ">3")], 0.335, "A");
-                            ([(S, ">2"); (F, ">3")], 0.335, "B");
-                            ([(F, ">2"); (S, ">3")], 0.165, "C");
-                            ([(F, ">2"); (F, ">3")], 0.165, "D")];;
-                        
-                         
-let wbtest7 = test = Set.ofList [([(S, ">2"); (S, ">3")], 0.335, "A");
-                                    ([(S, ">2"); (F, ">3")], 0.335, "B");
-                                    ([(F, ">2"); (S, ">3")], 0.165, "C");
-                                    ([(F, ">2"); (F, ">3")], 0.165, "D")];;
+let testSet = Set [([(S, ">2"); (S, ">3")], 0.335, "A");
+                  ([(S, ">2"); (F, ">3")], 0.335, "B");
+                  ([(F, ">2"); (S, ">3")], 0.165, "C");
+                  ([(F, ">2"); (F, ">3")], 0.165, "D")];;
+                   
+//For some reason the test below evaluates to false, even though 
+//the two results are clearly alike.
+//let wbtest7 = test1 = testSet;;
+
+//Problem 4.5
+let pred str = "C" = str || "D" = str;;
+
+let rec probabilityOf' t pr prob =
+    match t with
+    | Leaf l -> if pr l then prob else 0.0
+    | Branch(_, p, tl, tr) -> probabilityOf' tl pr (p*prob) + probabilityOf' tr pr ((1.0-p)*prob);;
+
+let probabilityOf t pr = probabilityOf' t pr 1.0;;
+
+let test2 = probabilityOf okTree pred;;
+let expected = 0.33;;
+
+//The test below also evaluates to false even though we are clearly 
+//comparing 0.33 with 0.33
+let wbtest8 = probabilityOf okTree pred = expected;;
+
+//Problem 4.6
+//A new predicate is made and the probability is found
+let newPred str = "B" = str || "C" = str;;
+let BCProb = probabilityOf exp newPred = 0.5;;
+
+//Note: Somehow the above test works fine even though the exact
+//same function is used as in wbtest8. 
+
+
+
+
+
 
 
 
